@@ -14,18 +14,18 @@ to make it work I had to :
   - source env.sh
 
 to install :
-install CUDA 6.5 first, then :
-(virtualenv nutshell; source nutshell/bin/activate)
-pip install numpy codepy
-cd copperhead
-python setup.py build
-python setup.py install
+  - install CUDA 6.5 first, then :
+  - (virtualenv nutshell; source nutshell/bin/activate)
+  - pip install numpy codepy
+  - cd copperhead
+  - python setup.py build
+  - python setup.py install
 
 or if you trust it : source setup.sh
 
 to test numpy with gpu :
-cd copperhead/sample
-(optirun) python axpy.py
+  - cd copperhead/sample
+  - (optirun) python axpy.py
 
 
 
