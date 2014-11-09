@@ -189,7 +189,7 @@ if cuda_support:
     nvcc_toolchain.add_library('cuda', [], [], [])
     #find architecture of GPU #0
     major, minor = cuda_utils.get_cuda_info()[0]
-    #nvcc_toolchain.cflags.append('-arch=sm_%s%s' % (major, minor))
+    nvcc_toolchain.cflags.append('-arch=sm_%s%s' % (major, minor))
     #does GPU #0 support doubles?
     float64_support = major >=2 or (major == 1 and minor >= 3)
     
