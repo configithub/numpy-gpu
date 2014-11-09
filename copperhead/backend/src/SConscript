@@ -1,0 +1,91 @@
+import os
+import inspect
+import fnmatch
+
+# try to import an environment first
+try:
+    Import('env')
+except:
+    env = Environment()
+env = env.Clone()
+
+try:
+    Import('siteconf')
+except:
+    siteconf = {}
+
+try:
+    Import('cuda_support')
+except:
+    cuda_support = False
+
+try:
+    Import('omp_support')
+except:
+    omp_support = False
+
+try:
+    Import('tbb_support')
+except:
+    tbb_support = False
+
+
+bid = siteconf.get('BOOST_INC_DIR', None)
+bld = siteconf.get('BOOST_LIB_DIR', None)
+if bid:
+    env.Append(CPPPATH = [bid])
+if bld:
+    env.Append(LIBPATH = [bld])
+
+parent, current = os.path.split(os.path.abspath(os.curdir))
+env.Append(CPPPATH = [os.path.join(parent, "inc")])
+
+if cuda_support:
+    env.Append(LIBS = ['cudart'])
+    env.Append(CPPDEFINES = ['CUDA_SUPPORT'])
+
+if omp_support:
+    env.Append(CPPDEFINES = ['OMP_SUPPORT'])
+
+if tbb_support:
+    env.Append(CPPDEFINES = ['TBB_SUPPORT'])
+    
+env.Append(CCFLAGS = ['-std=c++0x', '-Wall'])
+
+if not GetOption('num_jobs'):
+    #Parallelize the build maximally
+    import multiprocessing
+    n_jobs = multiprocessing.cpu_count()
+    SetOption('num_jobs', n_jobs)
+
+def recursive_glob(pattern):
+    files = Glob(pattern)
+    if files:
+        files += recursive_glob("*/"+pattern)
+    return files
+
+source_dirs = ['builtins', 'import', 'thrust', 'utility',
+               os.path.join('prelude', 'runtime')]
+source_files = Glob('*.cpp')
+source_files = reduce(lambda x, y: x + y,
+               map(lambda z:
+                       recursive_glob(z + '/*.cpp'),
+                   source_dirs),
+               source_files)
+
+objects = []
+for x in source_files:
+    objects.append(env.SharedObject(x))
+        
+libcopperhead = env.SharedLibrary(target='copperhead', source=objects)
+
+#Make this opt-in to avoid forcing everyone to install Doxygen    
+if 'doc' in COMMAND_LINE_TARGETS:
+    env.Alias('doc', [env.AlwaysBuild(
+                env.Doxygen(
+                    os.path.join(
+                        os.path.pardir,
+                        os.path.join('doc', 'copperhead.dox'))))])
+
+
+Return('libcopperhead')

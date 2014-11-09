@@ -1,0 +1,124 @@
+import os
+import inspect
+import fnmatch
+
+# try to import an environment first
+
+Import('env')
+env = env.Clone()
+
+try:
+    Import('cuda_support')
+    Import('omp_support')
+    Import('tbb_support')
+except:
+    cuda_support = False
+    omp_support = False
+    tbb_support = False
+
+abscur = os.path.abspath(os.curdir)
+parent, current = os.path.split(os.path.abspath(os.curdir))
+backend_dir = os.path.join(parent, 'backend')
+backend_inc_dir = os.path.join(backend_dir, 'inc')
+env.Append(CPPPATH = [backend_inc_dir])
+
+import distutils.sysconfig
+
+try:
+    Import('siteconf')
+except:
+    siteconf = {}
+
+#Add Python includes
+env.Append(CPPPATH = [distutils.sysconfig.get_python_inc()])
+env.Append(LIBS = [siteconf.get('BOOST_PYTHON_LIBNAME')])
+bid = siteconf.get('BOOST_INC_DIR', None)
+bld = siteconf.get('BOOST_LIB_DIR', None)
+np_inc_path = siteconf.get('NP_INC_DIR', None)
+if bid:
+    env.Append(CPPPATH = [bid])
+if bld:
+    env.Append(LIBPATH = [bld])
+
+if env['PLATFORM'] == 'darwin':
+    env.Append(LINKFLAGS=['-F/System/Library/Frameworks/', '-framework', 'Python'])
+
+if cuda_support:
+    env.Append(CPPDEFINES = ['CUDA_SUPPORT'])
+if omp_support:
+    env.Append(CPPDEFINES = ['OMP_SUPPORT'])
+if tbb_support:
+    env.Append(CPPDEFINES = ['TBB_SUPPORT'])
+
+
+cppenv = env.Clone()
+
+cudaenv = env.Clone()
+
+
+cppenv.Append(CCFLAGS = ["-std=c++0x", "-Wall"])
+
+cudaenv.Append(CPPPATH = [np_inc_path])
+
+
+if cuda_support:
+    cudaenv.Append(LIBS = ['cudart'])
+cudaenv.Append(CPPPATH = [os.path.join(backend_dir, 'inc', 'prelude')])
+
+
+cudaenv_host = cudaenv.Clone()
+cudaenv_host.Append(CCFLAGS = ["-std=c++0x", "-Wall"])
+
+
+extensions = []
+
+#Build backend compiler
+python_wrap_object = cppenv.SharedObject('copperhead/compiler/python_wrap.cpp')
+namespace_wrap_object = cppenv.SharedObject('copperhead/compiler/namespace_wrap.cpp')
+backend_compiler = cppenv.SharedLibrary(source=['copperhead/compiler/backendcompiler.cpp',
+                                                python_wrap_object, namespace_wrap_object],
+    SHLIBPREFIX='',SHLIBSUFFIX='.so')
+extensions.append(backend_compiler)
+
+cppenv_aug = cppenv.Clone()
+#Must prepend because some systems put system numpy headers with
+#System python headers, which means the system numpy headers always
+#get precedence over the ones we actually need to use
+cppenv_aug.Prepend(CPPPATH=[np_inc_path])
+
+cunp_library = cppenv_aug.SharedLibrary('copperhead/runtime/cunp.cpp')
+extensions.append(cunp_library)
+
+#Build backendsyntax, backendtypes
+for x in ['copperhead/compiler/backendsyntax.cpp',
+          'copperhead/compiler/backendtypes.cpp',
+          'copperhead/runtime/load.cpp',
+          'copperhead/runtime/tags.cpp']:
+    ext = cppenv.SharedLibrary(source=x,
+                               SHLIBPREFIX='',
+                               SHLIBSUFFIX='.so')
+    extensions.append(ext)
+
+
+#Build things with the cudata and cuda_info, if required
+cudaenv_host_files = ['copperhead/runtime/cudata.cpp']
+if cuda_support:
+    cudaenv_host_files.append('copperhead/runtime/cuda_utils.cpp')
+    
+#Build cudata
+for x in cudaenv_host_files:
+    ext = cudaenv_host.SharedLibrary(source=[x],
+                                     SHLIBPREFIX='',
+                                     SHLIBSUFFIX='.so')
+    extensions.append(ext)
+
+#Make this opt-in to avoid forcing everyone to install Doxygen    
+if 'doc' in COMMAND_LINE_TARGETS:
+    env.Alias('doc', [env.AlwaysBuild(
+                env.Doxygen(
+                    os.path.join(
+                        os.path.pardir,
+                        os.path.join('doc', 'copperhead.dox'))))])
+
+    
+Return('extensions')

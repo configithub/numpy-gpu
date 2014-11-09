@@ -1,0 +1,140 @@
+file /home/gilles/Developpement/pandas_gpu/copperhead/SConstruct,line 104:
+	Configure(confdir = .sconf_temp)
+scons: Configure: Checking g++ version... 
+scons: Configure: (cached) 4.9.1
+
+scons: Configure: Checking nvcc version... 
+scons: Configure: (cached) 6.5
+
+scons: Configure: Checking for C++ library cudart... 
+scons: Configure: ".sconf_temp/conftest_0.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_0.cpp <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_0.o" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_0.o -c -O2 -Wall -I/usr/local/cuda/include .sconf_temp/conftest_0.cpp
+  |
+scons: Configure: ".sconf_temp/conftest_0" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_0 .sconf_temp/conftest_0.o -L/usr/local/cuda/lib64 -lcudart
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C++ library python2.7... 
+scons: Configure: ".sconf_temp/conftest_1.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_1.cpp <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_1.o" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_1.o -c -O2 -Wall -I/usr/local/cuda/include .sconf_temp/conftest_1.cpp
+  |
+scons: Configure: ".sconf_temp/conftest_1" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_1 .sconf_temp/conftest_1.o -L/usr/local/cuda/lib64 -L/usr/lib/python2.7/config -lpython2.7
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C++ library boost_python... 
+scons: Configure: ".sconf_temp/conftest_2.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_2.cpp <-
+  |  |
+  |  |
+  |  |
+  |  |int
+  |  |main() {
+  |  |  
+  |  |return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_2.o" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_2.o -c -O2 -Wall -I/usr/local/cuda/include/thrust -I/usr/local/cuda/include .sconf_temp/conftest_2.cpp
+  |
+scons: Configure: ".sconf_temp/conftest_2" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_2 .sconf_temp/conftest_2.o -L/usr/local/cuda/lib64 -L/usr/lib/python2.7/config -lpython2.7 -lboost_python
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking for C++ header file thrust/host_vector.h... 
+scons: Configure: ".sconf_temp/conftest_3.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_3.cpp <-
+  |  |
+  |  |#include "thrust/host_vector.h"
+  |  |
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_3.o" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_3.o -c -O2 -Wall -I/usr/local/cuda/include/thrust -I/usr/local/cuda/include .sconf_temp/conftest_3.cpp
+  |
+scons: Configure: (cached) yes
+
+scons: Configure: Checking Thrust version...
+scons: Configure: ".sconf_temp/conftest_4.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_4.cpp <-
+  |  |
+  |  |#define THRUST_DEVICE_SYSTEM THRUST_DEVICE_SYSTEM_OMP
+  |  |#include <thrust/version.h>
+  |  |#include <iostream>
+  |  |int main() {
+  |  |  std::cout << THRUST_MAJOR_VERSION << std::endl;
+  |  |  std::cout << THRUST_MINOR_VERSION << std::endl;
+  |  |  std::cout << THRUST_SUBMINOR_VERSION << std::endl;
+  |  |  return 0;
+  |  |}
+  |  |
+  |
+scons: Configure: ".sconf_temp/conftest_4.o" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_4.o -c -O2 -Wall -I/usr/local/cuda/include/thrust -I/usr/local/cuda/include .sconf_temp/conftest_4.cpp
+  |
+scons: Configure: ".sconf_temp/conftest_4" is up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_4 .sconf_temp/conftest_4.o -L/usr/local/cuda/lib64 -L/usr/lib/python2.7/config -lpython2.7
+  |
+scons: Configure: ".sconf_temp/conftest_4.out" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_4 > .sconf_temp/conftest_4.out
+  |
+scons: Configure: (cached) 1.7.2
+
+scons: Configure: Checking for C++ header file tbb/tbb.h... 
+scons: Configure: ".sconf_temp/conftest_5.cpp" is up to date.
+scons: Configure: The original builder output was:
+  |.sconf_temp/conftest_5.cpp <-
+  |  |
+  |  |#include "tbb/tbb.h"
+  |  |
+  |  |
+  |
+scons: Configure: Building ".sconf_temp/conftest_5.o" failed in a previous run and all its sources are up to date.
+scons: Configure: The original builder output was:
+  |g++ -o .sconf_temp/conftest_5.o -c -O2 -Wall -I/usr/local/cuda/include .sconf_temp/conftest_5.cpp
+  |
+scons: Configure: (cached) no
+
